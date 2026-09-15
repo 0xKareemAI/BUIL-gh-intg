@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Builvero Dashboard - GitHub & BTIS API Simulation</title>
+  <meta name="description" content="High-fidelity interactive UI simulation of Builvero GitHub integration and BTIS score endpoints based on guide.md and image.png.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       Top Global Bar
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="nav-container">
+      <div class="brand-section">
+        <a href="#" class="logo-badge" id="brand-logo-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span>Builvero</span>
+        </a>
+        <div class="api-live-tag" title="All data dynamically driven from API responses">
+          <span class="dot"></span>
+          <span>API-Driven Simulation</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs: Dashboard vs Profile (image copy.png) -->
+      <div class="header-nav-tabs" role="tablist">
+        <button class="nav-tab-link active" id="tab-btn-dashboard" data-tab="dashboard">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </button>
+        <button class="nav-tab-link" id="tab-btn-profile" data-tab="profile">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Profile
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <div class="user-mini-pill" id="user-profile-header-pill" title="Click to view Profile & BTIS Score">
+          <div class="avatar-circle-sm" id="header-user-avatar">SA</div>
+          <span id="header-user-name">System Administrator</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       Main Project Dashboard (Matches image.png + Enhanced GitHub & BTIS Cards)
+       ======================================================================== -->
+  <main class="page-container page-view active" id="view-dashboard">
+    <!-- Back to browse link -->
+    <a href="#" class="back-link" id="nav-back-browse">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Back to Browse
+    </a>
+
+    <!-- Dashboard Title Row with Action Buttons (from image.png) -->
+    <div class="dashboard-title-row">
+      <h1 class="page-title" id="page-project-title">Dashboard</h1>
+      <div class="top-action-buttons">
+        <button class="btn-secondary-white" id="btn-forum">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Forum
+        </button>
+        <button class="btn-secondary-white" id="btn-edit-project">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Edit Project
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Alert Banners Container (Warnings from sync / error alerts) -->
+    <div class="alert-banner-container" id="alert-banner-container"></div>
+
+    <!-- Main Two-Column Layout (Matching image.png) -->
+    <div class="dashboard-grid">
+      
+      <!-- LEFT COLUMN -->
+      <div class="column-left">
+        <!-- Card 1: Project Information (api/projects/{projectId}) -->
+        <section class="bui-card" id="card-project-info">
+          <div class="card-heading">
+            <span>Project Information</span>
+            <span class="api-source-badge">GET api/projects/{id}</span>
+          </div>
+          <div class="badge-row" id="project-badges-container">
+            <!-- Driven by API -->
+            <span class="badge-tag badge-game" id="badge-project-type">Game</span>
+            <span class="badge-tag badge-early-stage" id="badge-project-stage">Early Stage</span>
+          </div>
+          <p class="meta-date" id="project-created-date">Created 7/20/2026</p>
+          <p class="project-desc" id="project-description-text">
+            Next-generation physics-driven modular multiplayer gaming framework built on low-latency WebSockets and WebAssembly.
+          </p>
+        </section>
+
+
+
+      </div>
+
+      <!-- RIGHT COLUMN (CORE FOCUS: GITHUB CARD & STATS) -->
+      <div class="column-right">
+        
+        <!-- CARD: GITHUB (Interactive State Machine strictly from guide.md) -->
+        <section class="bui-card github-card highlight-focus" id="card-github" aria-label="GitHub Integration Card">
+          <div class="card-heading">
+            <div style="display:flex; align-items:center; gap: 8px;">
+              <span>Github</span>
+            </div>
+            <div class="card-heading-actions">
+              <!-- Persistent Status Pill (Active, Broken, Unconnected, Syncing) -->
+              <span class="status-pill active" id="github-header-pill">
+                <span class="status-dot"></span>
+                <span id="github-header-pill-text">Active</span>
+              </span>
+              <span class="api-source-badge">api/projects/{id}/github</span>
+            </div>
+          </div>
+
+          <!-- Dynamic States inside GitHub Card -->
+
+          <!-- STATE 1: Unconnected View -->
+          <div class="github-unconnected-view" id="github-state-unconnected" style="display: none;">
+            <div class="github-empty-hero">
+              <div class="github-icon-circle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              </div>
+              <div class="github-unconnected-copy">
+                <h4>No repository connected</h4>
+                <p>Link a GitHub repo to monitor open issues, link PRs, and boost your BTIS score.</p>
+              </div>
+            </div>
+            <button class="btn-connect-github" id="btn-trigger-connect">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              Connect GitHub repo
+            </button>
+          </div>
+
+          <!-- STATE 2: Connected View (Streamlined & Unified matching image.png) -->
+          <div class="github-connected-view" id="github-state-connected">
+            <div class="screenshot-match-row">
+              <div class="github-avatar" id="github-author-avatar">SA</div>
+              <div class="github-status-meta">
+                <span class="github-wire-status">status: <strong id="github-wire-status-text">connected</strong></span>
+                <a href="https://github.com/builvero/game-engine-core" target="_blank" class="repo-full-name-link" id="repo-full-name-link" title="Open repository on GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                  <span id="repo-display-name">builvero/game-engine-core</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Action buttons for Active Connection (§4.2, §4.4) -->
+            <div class="github-actions-toolbar">
+              <button class="btn-github-action btn-sync" id="btn-trigger-sync" title="POST api/projects/{id}/github/sync">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                Sync with GitHub
+              </button>
+              <button class="btn-github-action btn-disconnect" id="btn-trigger-disconnect" title="DELETE api/projects/{id}/github/repo-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                Disconnect Repo
+              </button>
+            </div>
+          </div>
+
+          <!-- STATE 3: Broken Connection View (§4.5, §5) -->
+          <div class="github-broken-view" id="github-state-broken" style="display: none;">
+            <div class="broken-alert-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <div class="broken-alert-content">
+                <h5>Connection Broken</h5>
+                <p>The previously linked repository was deleted or access was revoked on GitHub. Please reconnect or link another repository.</p>
+              </div>
+            </div>
+            <button class="btn-reconnect" id="btn-trigger-reconnect">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              Reconnect Repository
+            </button>
+          </div>
+
+          <!-- STATE 4: In-flight Syncing Skeleton View (§4.2, §8.4) -->
+          <div class="github-syncing-view" id="github-state-syncing" style="display: none;">
+            <div class="sync-in-progress-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-sync spinning"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Calling GitHub API & reconciling repos...</span>
+            </div>
+            <div class="shimmer-bar" style="width: 85%;"></div>
+            <div class="shimmer-bar" style="width: 60%;"></div>
+            <div class="shimmer-bar" style="width: 45%;"></div>
+          </div>
+        </section>
+
+        <!-- CARD: MEMBERS (Exact match from image.png) -->
+        <section class="bui-card" id="card-members">
+          <h2 class="card-heading">Members</h2>
+          <div class="member-item">
+            <div class="avatar-circle" id="member-avatar">SA</div>
+            <div class="member-info">
+              <span id="member-name">System Administrator</span>
+              <span class="role-muted" id="member-role-title">· Owner</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD: PROJECT STATS (Exact match from image.png) -->
+        <section class="bui-card" id="card-project-stats">
+          <h2 class="card-heading">Project Stats</h2>
+          <div class="stats-list">
+            <div class="stat-row">
+              <span class="stat-label">Pending invitations:</span>
+              <span class="stat-value" id="stats-pending-invitations">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Pending join requests:</span>
+              <span class="stat-value" id="stats-pending-requests">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Your role:</span>
+              <span class="role-pill-owner" id="stats-user-role">Owner</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD: PENDING REQUESTS FOR THIS PROJECT (Exact match from image.png) -->
+        <section class="bui-card" id="card-pending-requests">
+          <h2 class="card-heading">Pending Requests for This Project</h2>
+          <p class="empty-state-text">No pending requests.</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       NEW VIEW: Profile View (Pixel-Perfect from image copy.png + Embedded BTIS)
+       ======================================================================== -->
+  <section class="page-container page-view" id="view-profile" style="display: none;">
+    <div class="profile-grid">
+      
+      <!-- LEFT CARD: Profile Information (Matching image copy.png) -->
+      <div class="bui-card profile-form-container">
+        <h2 class="card-heading" style="padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 24px;">
+          Profile Information
+        </h2>
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="profile-full-name">Full Name<span class="required-star">*</span></label>
+          <input type="text" class="form-input" id="profile-full-name" value="System Administrator">
+        </div>
+
+        <!-- Summary -->
+        <div class="form-group">
+          <label class="form-label" for="profile-summary">Summary<span class="required-star">*</span></label>
+          <textarea class="form-textarea" id="profile-summary">Initial system administrator account</textarea>
+          <div class="form-char-count">36 / 3000 (min 10)</div>
+        </div>
+
+        <!-- City & Country Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="profile-city">City<span class="required-star">*</span></label>
+            <input type="text" class="form-input" id="profile-city" value="San Francisco">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="profile-country">Country<span class="required-star">*</span></label>
+            <input type="text" class="form-input" id="profile-country" value="USA">
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label class="form-label" for="profile-phone-number">Phone</label>
+          <div class="phone-field-row">
+            <select class="form-select phone-country-select" id="profile-phone-country" aria-label="Country Code">
+              <option value="+20" selected>EG Egypt (+20)</option>
+              <option value="+1">US United States (+1)</option>
+              <option value="+44">UK United Kingdom (+44)</option>
+            </select>
+            <input type="text" class="form-input" id="profile-phone-number" value="1001234567" placeholder="Phone number">
+          </div>
+          <div class="form-char-count">Example: 1001234567</div>
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="form-group">
+          <label class="form-label">Profile Photo</label>
+          <div class="profile-photo-uploader">
+            <div class="profile-uploader-avatar" id="profile-photo-avatar">SA</div>
+            <div class="profile-photo-meta">
+              <button type="button" class="btn-secondary-white" style="font-size:13px; padding:6px 14px; width:fit-content;">
+                Choose Photo
+              </button>
+              <span class="photo-hint-text">JPEG, PNG or WebP, up to 10MB.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary Category -->
+        <div class="form-group">
+          <label class="form-label" for="profile-primary-category">Primary Category</label>
+          <select class="form-select" id="profile-primary-category">
+            <option value="software-architecture" selected>Software Architecture / Core Engineering</option>
+            <option value="game-development">Game Development</option>
+            <option value="infrastructure">Cloud & Infrastructure</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- RIGHT CARD: Profile Summary & Embedded BTIS Score -->
+      <div class="profile-right-card">
+        <!-- Exact reproduction of image copy.png -->
+        <div class="profile-large-avatar" id="profile-card-avatar">SA</div>
+        <h3 class="profile-summary-name" id="profile-card-name">System Administrator</h3>
+        <p class="profile-summary-loc" id="profile-card-loc">San Francisco, USA</p>
+        <div class="profile-complete-badge">Profile Complete</div>
+
+        <!-- Embedded BTIS Score Section (inside that right card as requested) -->
+        <div class="profile-btis-embed" id="card-btis-score">
+          <div class="card-heading" style="margin-bottom: 14px;">
+            <span style="font-size: 15.5px;">BTIS Score</span>
+            <span class="api-source-badge">GET api/users/me/btis-score</span>
+          </div>
+
+          <!-- Populated BTIS State -->
+          <div id="btis-populated-view">
+            <div class="btis-score-row" style="margin-bottom: 12px; padding-bottom: 12px;">
+              <div>
+                <div class="btis-score-display">
+                  <span class="btis-score-num" id="btis-score-val">84.5</span>
+                  <span class="btis-score-cap" id="btis-cap-val">/ 95.0 Cap</span>
+                </div>
+                <div style="font-size: 11.5px; color: var(--slate-500); margin-top: 2px;">
+                  Calculated from GitHub commits & PR cadence
+                </div>
+              </div>
+              <button class="btn-secondary-white" id="btn-toggle-btis-empty" style="padding: 4px 10px; font-size: 11px;" title="Test empty state where user has no score yet">
+                Simulate Empty
+              </button>
+            </div>
+
+            <!-- Pillars Breakdown -->
+            <div class="btis-card-pillars" id="btis-pillars-container">
+              <!-- Dynamically populated from API -->
+            </div>
+          </div>
+
+          <!-- Empty BTIS State (§4.7 response with empty Pillars: [], Axes: []) -->
+          <div id="btis-empty-view" style="display: none; padding: 8px 0;">
+            <div style="display:flex; align-items:center; gap: 10px; margin-bottom: 10px;">
+              <div class="avatar-circle-sm" style="background:var(--slate-200); color:var(--slate-600); width:32px; height:32px;">--</div>
+              <div>
+                <div style="font-weight:700; font-size:13.5px; color:var(--slate-800);">No Score Available Yet</div>
+                <div style="font-size:11.5px; color:var(--slate-500);">Connect an active repository to calculate BTIS.</div>
+              </div>
+            </div>
+            <button class="btn-reconnect" id="btn-restore-btis" style="width:100%; font-size:12px; padding:6px 12px;">
+              Create Project & Connect
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       MODAL 1: Unclaimed Repositories Picker (§4.1 & §4.3)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-repo-picker" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Select GitHub Repository</h3>
+        <button class="modal-close-btn" id="btn-close-picker">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13.5px; color: var(--slate-600);">
+          The following repositories were detected in your GitHub App installation and are available to connect to this project:
+        </p>
+        <div class="repo-selection-list" id="repo-picker-radio-group">
+          <!-- Populated from api/projects/{id}/github/connect/init AvailableRepos -->
+        </div>
+        <div style="padding-top: 8px; border-top: 1px solid var(--slate-100); display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-size: 12.5px; color: var(--slate-500);">Don't see your repo?</span>
+          <button class="btn-secondary-white" id="btn-open-install-url" style="font-size: 12.5px; padding: 6px 12px;">
+            Install via GitHub App &rarr;
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary-white" id="btn-cancel-picker">Cancel</button>
+        <button class="btn-reconnect" id="btn-confirm-link-repo" disabled>Connect Selected Repo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: GitHub Installation Redirect Notice (§4.1 Frontend Flow)
+       Tells the user they are being redirected to InstallUrl (No fake popup)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-redirect-notice" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 560px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap: 10px;">
+          <div class="avatar-circle-sm" style="background:#24292f;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          </div>
+          <h3 class="modal-title" style="font-size:16px;">Redirecting to GitHub App Installation</h3>
+        </div>
+        <button class="modal-close-btn" id="btn-close-redirect-notice">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--sky-50); border: 1px solid var(--sky-200); border-radius: var(--radius-md); padding: 14px 16px;">
+          <div style="font-weight:700; color:var(--sky-900); font-size:13.5px; margin-bottom:4px;">
+            Frontend Behavior (§4.1 in guide.md):
+          </div>
+          <p style="font-size: 13px; color: var(--sky-800); line-height: 1.5;">
+            When <code>AvailableRepos</code> is empty (or the user wants to add new repositories), the browser directly redirects to the returned <code>InstallUrl</code>:
+          </p>
+          <div style="background:#090d16; border-radius:6px; padding:10px; margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:12px; color:#e2e8f0; overflow-x:auto;">
+            <span style="color:#93c5fd;">window.location.href</span> = <span style="color:#6ee7b7;">response.InstallUrl</span>;
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:12.5px; font-weight:700; color:var(--slate-700); margin-bottom:6px;">
+            Destination URL (from <code>POST connect/init</code>):
+          </div>
+          <div style="background:var(--slate-50); border:1px solid var(--border-subtle); border-radius:6px; padding:10px 12px; font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--slate-800); word-break:break-all;" id="redirect-target-url-display">
+            https://github.com/apps/builvero-app/installations/new?state=<span class="var-guid">a4f81c90-48e2-4751-b0db-559d8c83a19b</span>
+          </div>
+        </div>
+
+        <div style="font-size:12.5px; color:var(--slate-500); line-height:1.5;">
+          After the user completes the installation on GitHub, GitHub automatically redirects back to Builvero at <code>/projects/{projectId}</code>. The app mounts and immediately invokes <code>POST api/projects/{id}/github/sync</code> (§4.2).
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary-white" id="btn-cancel-redirect-notice">Cancel</button>
+        <button class="btn-connect-github" id="btn-simulate-return-redirect" style="width:auto; padding:8px 18px; font-size:13px;">
+          Simulate Return from GitHub &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: Disconnect Confirmation Modal (§4.4)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="modal-disconnect-confirm" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: var(--rose-600);">Disconnect Repository?</h3>
+        <button class="modal-close-btn" id="btn-close-disconnect">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; color: var(--slate-700);">
+          Are you sure you want to disconnect <strong id="disconnect-target-name">builvero/game-engine-core</strong> from this project?
+        </p>
+        <div style="background: var(--rose-50); border: 1px solid var(--rose-200); border-radius: var(--radius-sm); padding: 12px; font-size: 12.5px; color: var(--rose-800);">
+          Builvero will immediately stop synchronizing commits, pull requests, and open issues for this project.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary-white" id="btn-cancel-disconnect">Keep Connected</button>
+        <button class="btn-disconnect" id="btn-confirm-disconnect" style="padding: 8px 18px;">
+          Disconnect Repository
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       ENHANCED SCENARIO COMMAND BAR (Grouped One-Click Case Selector)
+       ======================================================================== -->
+  <footer class="scenario-command-bar" aria-label="Simulation Command Bar">
+    <div class="scenario-bar-groups">
+      <!-- Group 1: Connect & Linking -->
+      <div class="scenario-group">
+        <span class="group-label">Connect:</span>
+        <button class="scenario-chip-btn active" data-scenario="active-connected" title="Active repo connected (from image.png)">
+          Connected
+        </button>
+        <button class="scenario-chip-btn" data-scenario="unconnected-initial" title="Initial unconnected project card">
+          Not Connected
+        </button>
+        <button class="scenario-chip-btn" data-scenario="init-unclaimed-picker" title="connect/init returns AvailableRepos (3 repos) -> opens picker">
+          Unclaimed Picker (3 repos)
+        </button>
+        <button class="scenario-chip-btn" data-scenario="init-empty-redirect" title="connect/init returns AvailableRepos: [] -> directly redirects to InstallUrl (§4.1)">
+          Empty Repos (Direct Redirect)
+        </button>
+        <button class="scenario-chip-btn" data-scenario="sync-choose-repo" title="sync returns choose_repo (multi-repo choice)">
+          Multi-Repo (choose)
+        </button>
+      </div>
+
+      <!-- Group 2: Sync & Health -->
+      <div class="scenario-group">
+        <span class="group-label">Sync:</span>
+        <button class="scenario-chip-btn" data-scenario="sync-warning-banner" title="sync returns Warnings: repo_disconnected on another project">
+          Warning Banner
+        </button>
+        <button class="scenario-chip-btn" data-scenario="broken-state" title="ProjectRepoLinkStatus.Broken (repo removed on GitHub)">
+          Broken State
+        </button>
+      </div>
+
+      <!-- Group 3: API Errors -->
+      <div class="scenario-group">
+        <span class="group-label">Errors:</span>
+        <button class="scenario-chip-btn btn-danger-chip" data-scenario="err-401" title="Simulate 401 Unauthorized (JWT Expired)">
+          401 Auth
+        </button>
+        <button class="scenario-chip-btn btn-danger-chip" data-scenario="err-403" title="Simulate 403 Forbidden (Not Project Owner)">
+          403 Not Owner
+        </button>
+        <button class="scenario-chip-btn btn-danger-chip" data-scenario="err-500" title="Simulate 500 Unhandled Server Error">
+          500 Server Bug
+        </button>
+      </div>
+
+      <!-- Group 4: Profile / BTIS Tab -->
+      <div class="scenario-group">
+        <span class="group-label">Views:</span>
+        <button class="scenario-chip-btn" data-scenario="view-profile-tab" title="Switch to Profile tab (image copy.png) and view embedded BTIS score">
+          Profile Tab
+        </button>
+      </div>
+    </div>
+
+    <!-- API Inspector Button (Over Everything) -->
+    <button class="inspector-toggle-badge-btn" id="btn-toggle-inspector" title="Toggle Live API Inspector with variable highlighting">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+      <span>API Inspector</span>
+      <span class="inspector-count-bubble" id="log-count-badge">0</span>
+    </button>
+  </footer>
+
+  <!-- ========================================================================
+       LIVE API INSPECTOR DRAWER (Over Everything + Variable Highlighting)
+       ======================================================================== -->
+  <aside class="api-inspector-drawer" id="api-inspector-drawer" aria-label="API Inspector Drawer">
+    <div class="inspector-header">
+      <span class="inspector-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+        Live Wire Inspector (Real-time HTTP DTOs)
+      </span>
+      <div style="display:flex; align-items:center; gap: 10px;">
+        <button class="btn-secondary-white" id="btn-clear-logs" style="padding: 3px 10px; font-size: 11px; background: #131b2e; color: #cbd5e1; border-color: #334155;">Clear</button>
+        <button class="modal-close-btn" id="btn-close-inspector" style="color: #cbd5e1;">&times;</button>
+      </div>
+    </div>
+
+    <!-- Variable Syntax Legend -->
+    <div class="inspector-legend">
+      <span style="font-weight:700; color:#e2e8f0;">Syntax:</span>
+      <div class="legend-item"><span class="legend-dot" style="background:#f43f5e;"></span><span>GUIDs / projectId</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#38bdf8;"></span><span>API Path</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#6ee7b7;"></span><span>Strings</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:#fde047;"></span><span>Numbers</span></div>
+    </div>
+
+    <div class="inspector-body" id="inspector-log-container">
+      <div style="color: #64748b; font-size: 12px; text-align: center; padding: 28px;">
+        No HTTP requests logged yet. Click any button or scenario to inspect real-time wire DTOs.
+      </div>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
